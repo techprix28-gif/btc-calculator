@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Valor de BTC</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> <!-- Placeholder for icons if needed, or I can use SVG -->
+</head>
+<body>
+    <div class="background-glow"></div>
+    <div class="container">
+        <header>
+            <h1><span class="btc-icon">₿</span> Calculadora BTC</h1>
+            <p class="subtitle">Herramienta financiera para Bitcoin</p>
+        </header>
+
+        <main>
+            <!-- Section 1: Historical Price -->
+            <section class="card glass-effect" id="historical-section">
+                <h2><i class="fas fa-calendar-alt"></i> Consulta Histórica</h2>
+                <p class="description">Consulta el precio de Bitcoin en una fecha pasada.</p>
+                <div class="input-group">
+                    <label for="historical-date">Selecciona una fecha:</label>
+                    <input type="date" id="historical-date" max="">
+                </div>
+                <button id="btn-check-history" class="btn-primary">Consultar Precio</button>
+                <div id="historical-result" class="result-display hidden">
+                    <span class="label">Precio en esa fecha:</span>
+                    <span class="value" id="historical-price-value">--</span>
+                </div>
+            </section>
+
+            <!-- Section 2: Converter -->
+            <section class="card glass-effect" id="converter-section">
+                <h2><i class="fas fa-exchange-alt"></i> Conversor BTC ↔ USDT</h2>
+                <p class="description">Conversión en tiempo real con el precio actual.</p>
+                <div class="converter-grid">
+                    <div class="input-wrapper">
+                        <label for="btc-input">BTC</label>
+                        <input type="number" id="btc-input" placeholder="0.00" step="any">
+                    </div>
+                    <div class="exchange-icon">↔</div>
+                    <div class="input-wrapper">
+                        <label for="usdt-input">USDT</label>
+                        <input type="number" id="usdt-input" placeholder="0.00" step="any">
+                    </div>
+                </div>
+                <div class="current-price-info">
+                    Precio actual: <span id="current-price-display">Cargando...</span>
+                </div>
+            </section>
+
+            <!-- Section 3: Future Projection -->
+            <section class="card glass-effect" id="projection-section">
+                <h2><i class="fas fa-chart-line"></i> Proyección Futura</h2>
+                <p class="description">Calcula el valor de tus tenencias a un precio futuro.</p>
+                <div class="input-group">
+                    <label for="holdings-input">Tus Tenencias (BTC):</label>
+                    <input type="number" id="holdings-input" placeholder="Ej: 0.5" step="any">
+                </div>
+                <div class="input-group">
+                    <label for="future-price-input">Precio Futuro Deseado (USDT):</label>
+                    <input type="number" id="future-price-input" placeholder="Ej: 100000" step="any">
+                </div>
+                <div id="projection-result" class="result-display">
+                    <span class="label">Valor Futuro Estimado:</span>
+                    <span class="value highlight" id="projected-value">0.00 USDT</span>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Datos proporcionados por CoinGecko API</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
