@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,8 +9,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> <!-- Placeholder for icons if needed, or I can use SVG -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <!-- Placeholder for icons if needed, or I can use SVG -->
 </head>
+
 <body>
     <div class="background-glow"></div>
     <div class="container">
@@ -19,18 +22,35 @@
         </header>
 
         <main>
-            <!-- Section 1: Historical Price -->
+            <!-- Section 1: Historical Price Range -->
             <section class="card glass-effect" id="historical-section">
-                <h2><i class="fas fa-calendar-alt"></i> Consulta Histórica</h2>
-                <p class="description">Consulta el precio de Bitcoin en una fecha pasada.</p>
-                <div class="input-group">
-                    <label for="historical-date">Selecciona una fecha:</label>
-                    <input type="date" id="historical-date" max="">
+                <h2><i class="fas fa-calendar-alt"></i> Consulta Histórica (Rango)</h2>
+                <p class="description">Consulta estadísticas de precio en un rango de fechas.</p>
+                <div class="date-range-group">
+                    <div class="input-wrapper">
+                        <label for="start-date">Fecha Inicio:</label>
+                        <input type="date" id="start-date">
+                    </div>
+                    <div class="input-wrapper">
+                        <label for="end-date">Fecha Fin:</label>
+                        <input type="date" id="end-date">
+                    </div>
                 </div>
-                <button id="btn-check-history" class="btn-primary">Consultar Precio</button>
-                <div id="historical-result" class="result-display hidden">
-                    <span class="label">Precio en esa fecha:</span>
-                    <span class="value" id="historical-price-value">--</span>
+                <button id="btn-check-history" class="btn-primary">Consultar Estadísticas</button>
+
+                <div id="historical-result" class="stats-grid hidden">
+                    <div class="stat-item">
+                        <span class="label">Máximo</span>
+                        <span class="value highlight-up" id="stat-max">--</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="label">Mínimo</span>
+                        <span class="value highlight-down" id="stat-min">--</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="label">Promedio</span>
+                        <span class="value" id="stat-avg">--</span>
+                    </div>
                 </div>
             </section>
 
@@ -79,4 +99,5 @@
     </div>
     <script src="script.js"></script>
 </body>
+
 </html>

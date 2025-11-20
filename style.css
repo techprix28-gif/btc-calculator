@@ -1,5 +1,6 @@
 :root {
-    --primary-color: #F7931A; /* Bitcoin Orange */
+    --primary-color: #F7931A;
+    /* Bitcoin Orange */
     --secondary-color: #4D4D4D;
     --bg-color: #0f0f13;
     --card-bg: rgba(255, 255, 255, 0.05);
@@ -42,8 +43,15 @@ body {
 }
 
 @keyframes pulse {
-    0% { opacity: 0.5; transform: scale(1); }
-    100% { opacity: 0.8; transform: scale(1.1); }
+    0% {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+
+    100% {
+        opacity: 0.8;
+        transform: scale(1.1);
+    }
 }
 
 .container {
@@ -226,7 +234,8 @@ button.btn-primary:active {
 }
 
 .highlight {
-    color: #2ecc71 !important; /* Green for positive/future value */
+    color: #2ecc71 !important;
+    /* Green for positive/future value */
 }
 
 footer {
@@ -236,17 +245,68 @@ footer {
     margin-top: 2rem;
 }
 
-/* Responsive */
+/* Date Range Group */
+.date-range-group {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
 @media (max-width: 480px) {
-    .converter-grid {
+    .date-range-group {
         flex-direction: column;
     }
-    
-    .exchange-icon {
-        transform: rotate(90deg);
-    }
-    
-    h1 {
-        font-size: 2rem;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+    background: rgba(247, 147, 26, 0.05);
+    border-radius: 15px;
+    padding: 1.5rem;
+    border: 1px solid rgba(247, 147, 26, 0.1);
+}
+
+.stats-grid.hidden {
+    display: none;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+}
+
+.stat-item .label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stat-item .value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.highlight-up {
+    color: #2ecc71 !important;
+    /* Green for Max */
+}
+
+.highlight-down {
+    color: #e74c3c !important;
+    /* Red for Min */
+}
+
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
     }
 }
