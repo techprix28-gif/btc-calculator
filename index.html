@@ -10,7 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-    <!-- Placeholder for icons if needed, or I can use SVG -->
 </head>
 
 <body>
@@ -103,17 +102,21 @@
                 </div>
 
                 <div class="input-group">
-                    <label for="withdrawal-rate">Tasa de Retiro Segura (%)</label>
-                    <input type="number" id="withdrawal-rate" value="4" step="0.1">
-                </div>
-
-                <div class="input-group">
                     <label for="current-age">Edad Actual</label>
                     <input type="number" id="current-age" placeholder="Ej: 30">
                 </div>
 
                 <div class="input-group">
-                    <label for="btc-growth">Crecimiento Anual Estimado BTC (%)</label>
+                    <label for="life-expectancy">Esperanza de Vida (Edad)</label>
+                    <input type="number" id="life-expectancy" value="85" placeholder="Ej: 85">
+                </div>
+
+                <div class="input-group">
+                    <label for="btc-growth">Crecimiento Anual Estimado BTC (%)
+                        <small style="color: var(--primary-color); font-weight: normal; margin-left: 10px;">
+                            (Último año: <span id="btc-1y-growth">Cargando...</span>)
+                        </small>
+                    </label>
                     <input type="number" id="btc-growth" placeholder="Ej: 20" step="0.1">
                 </div>
 
@@ -126,11 +129,11 @@
 
                 <div id="retirement-result" class="hidden">
                     <div class="result-display">
-                        <span class="label">Capital Necesario:</span>
+                        <span class="label">Capital al Retiro:</span>
                         <span class="value" id="required-capital">0.00 USDT</span>
                     </div>
                     <div class="result-display">
-                        <span class="label">BTC Necesario Ahora:</span>
+                        <span class="label">BTC Acumulado:</span>
                         <span class="value" id="required-btc-now">0.00 BTC</span>
                     </div>
                     <div class="result-display">

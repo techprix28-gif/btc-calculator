@@ -37,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Fetch current price immediately
         fetchCurrentPrice();
+        fetchAnnualGrowth();
 
         // Refresh price every 60 seconds
         setInterval(fetchCurrentPrice, 60000);
@@ -163,6 +164,47 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    async function fetchAnnualGrowth() {
+        const growthDisplay = document.getElementById('btc-1y-growth');
+        try {
+            // Get date 365 days ago
+            const today = new Date();
+            const lastYear = new Date(today.setDate(today.getDate() - 365));
+            const from = Math.floor(lastYear.getTime() / 1000);
+            const to = from + 3600; // 1 hour window to get a price point
+
+            // Fetch price from 1 year ago
+            const response = await fetch(`${API_BASE}/coins/bitcoin/market_chart/range?vs_currency=usd&from=${from}&to=${to}`);
+            if (!response.ok) throw new Error('Failed to fetch history');
+
+            const data = await response.json();
+            if (data.prices && data.prices.length > 0) {
+                const oldPrice = data.prices[0][1];
+
+                // We need current price. If not set yet, wait or fetch.
+                // For simplicity, we'll use the one we hopefully just fetched or fetch simple again if needed.
+                // But to be safe, let's just use the simple price endpoint again here to ensure we have "now" vs "then".
+
+                const currentRes = await fetch(`${API_BASE}/simple/price?ids=bitcoin&vs_currencies=usd`);
+                const currentData = await currentRes.json();
+                const currentPrice = currentData.bitcoin.usd;
+
+                const growth = ((currentPrice - oldPrice) / oldPrice) * 100;
+                const sign = growth >= 0 ? '+' : '';
+
+                growthDisplay.textContent = `${sign}${growth.toFixed(2)}%`;
+
+                // Color code
+                growthDisplay.style.color = growth >= 0 ? '#00ff88' : '#ff4444';
+            } else {
+                growthDisplay.textContent = "N/A";
+            }
+        } catch (error) {
+            console.error('Error fetching annual growth:', error);
+            growthDisplay.textContent = "Error";
+        }
+    }
+
     // --- Logic Functions ---
 
     function handleBtcToUsdt() {
@@ -199,10 +241,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function updatePriceUI(isStatic = false) {
+        const formatted = formatCurrency(currentBtcPrice);
+        currentPriceDisplay.textContent = isStatic ? `${formatted} (Simulado)` : formatted;
+
+        // Trigger recalculation if inputs exist
+        if (btcInput.value) handleBtcToUsdt();
+        // Also update retirement BTC needed if visible/calculated
+        const retirementResult = document.getElementById('retirement-result');
+        if (retirementResult && !retirementResult.classList.contains('hidden')) calculateRetirement();
+    }
+
     // --- Retirement Calculator Logic ---
     const annualExpenseInput = document.getElementById('annual-expense');
-    const withdrawalRateInput = document.getElementById('withdrawal-rate');
     const currentAgeInput = document.getElementById('current-age');
+    const lifeExpectancyInput = document.getElementById('life-expectancy');
     const btcGrowthInput = document.getElementById('btc-growth');
     const annualSavingsBtcInput = document.getElementById('annual-savings-btc');
     const btnCalculateRetirement = document.getElementById('btn-calculate-retirement');
@@ -218,80 +271,88 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function calculateRetirement() {
         const expense = parseFloat(annualExpenseInput.value);
-        const withdrawalRate = parseFloat(withdrawalRateInput.value);
-        const age = parseFloat(currentAgeInput.value);
+        const currentAge = parseFloat(currentAgeInput.value);
+        const lifeExpectancy = parseFloat(lifeExpectancyInput.value);
         const growth = parseFloat(btcGrowthInput.value);
         const savingsBtc = parseFloat(annualSavingsBtcInput.value);
 
-        if (isNaN(expense) || isNaN(withdrawalRate) || isNaN(age) || isNaN(growth) || isNaN(savingsBtc)) {
+        if (isNaN(expense) || isNaN(currentAge) || isNaN(lifeExpectancy) || isNaN(growth) || isNaN(savingsBtc)) {
             alert('Por favor completa todos los campos de la calculadora de retiro.');
             return;
         }
 
-        if (withdrawalRate <= 0) {
-            alert('La tasa de retiro debe ser mayor a 0.');
+        if (lifeExpectancy <= currentAge) {
+            alert('La esperanza de vida debe ser mayor que la edad actual.');
             return;
         }
 
-        // 1. Calculate Required Capital
-        // Capital = Expense / (Rate / 100)
-        const requiredCapital = expense / (withdrawalRate / 100);
-        requiredCapitalDisplay.textContent = formatCurrency(requiredCapital);
+        // Simulation: Find the minimum years to save (work)
+        let yearsToWork = 0;
+        let found = false;
+        const maxYears = lifeExpectancy - currentAge;
 
-        // 2. Calculate Required BTC Now
-        if (currentBtcPrice > 0) {
-            const requiredBtc = requiredCapital / currentBtcPrice;
-            requiredBtcNowDisplay.textContent = requiredBtc.toFixed(4) + ' BTC';
-        } else {
-            requiredBtcNowDisplay.textContent = 'Precio no disponible';
-        }
+        let finalAccumulatedCapital = 0;
+        let finalRequiredBtc = 0;
 
-        // 3. Project Retirement Age
-        // We simulate year by year accumulation
-        let accumulatedBtc = 0;
-        let projectedBtcPrice = currentBtcPrice;
-        let years = 0;
-        let reached = false;
-        const maxYears = 100; // Safety break
+        // Loop through possible years of work (0 to max)
+        for (yearsToWork = 0; yearsToWork <= maxYears; yearsToWork++) {
+            let retirementAge = currentAge + yearsToWork;
 
-        while (years < maxYears) {
-            // Add annual savings
-            accumulatedBtc += savingsBtc;
+            // Let's redo the simulation loop with BTC balance check which is cleaner
+            let btcBalance = 0;
+            let simPrice = currentBtcPrice;
 
-            // Apply growth to price
-            projectedBtcPrice = projectedBtcPrice * (1 + (growth / 100));
+            // 1. Accumulate
+            for (let i = 0; i < yearsToWork; i++) {
+                btcBalance += savingsBtc;
+                simPrice *= (1 + growth / 100);
+            }
 
-            // Check total value
-            const totalValue = accumulatedBtc * projectedBtcPrice;
+            let btcAtRetirement = btcBalance;
+            let priceAtRetirement = simPrice;
 
-            years++;
+            // 2. Drawdown
+            let drawdownSuccess = true;
+            let tempBtcBalance = btcBalance;
+            let tempPrice = simPrice;
 
-            if (totalValue >= requiredCapital) {
-                reached = true;
+            for (let j = 0; j < (lifeExpectancy - retirementAge); j++) {
+                // Calculate BTC needed for expense
+                let btcNeeded = expense / tempPrice;
+
+                tempBtcBalance -= btcNeeded;
+
+                if (tempBtcBalance < 0) {
+                    drawdownSuccess = false;
+                    break;
+                }
+
+                // Price grows for next year
+                tempPrice *= (1 + growth / 100);
+            }
+
+            if (drawdownSuccess) {
+                found = true;
+                finalAccumulatedCapital = btcAtRetirement * priceAtRetirement;
+                finalRequiredBtc = btcAtRetirement;
                 break;
             }
         }
 
         retirementResult.classList.remove('hidden');
 
-        if (reached) {
-            const retirementAge = age + years;
-            retirementProjectionDisplay.textContent = `${years} años (Edad: ${retirementAge})`;
+        if (found) {
+            const retirementAge = currentAge + yearsToWork;
+            retirementProjectionDisplay.textContent = `${yearsToWork} años (Edad: ${retirementAge})`;
+
+            requiredCapitalDisplay.textContent = formatCurrency(finalAccumulatedCapital);
+            requiredBtcNowDisplay.textContent = finalRequiredBtc.toFixed(4) + ' BTC';
+
         } else {
-            retirementProjectionDisplay.textContent = `Más de ${maxYears} años`;
+            retirementProjectionDisplay.textContent = `Imposible con los parámetros actuales`;
+            requiredCapitalDisplay.textContent = "---";
+            requiredBtcNowDisplay.textContent = "---";
         }
-    }
-
-    // --- Helper Functions ---
-
-    function updatePriceUI(isStatic = false) {
-        const formatted = formatCurrency(currentBtcPrice);
-        currentPriceDisplay.textContent = isStatic ? `${formatted} (Simulado)` : formatted;
-
-        // Trigger recalculation if inputs exist
-        if (btcInput.value) handleBtcToUsdt();
-        // Also update retirement BTC needed if visible/calculated
-        if (retirementResult && !retirementResult.classList.contains('hidden')) calculateRetirement();
     }
 
     function formatCurrency(amount) {
