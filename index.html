@@ -91,6 +91,54 @@
                     <span class="value highlight" id="projected-value">0.00 USDT</span>
                 </div>
             </section>
+
+            <!-- Section 4: Retirement Calculator -->
+            <section class="card glass-effect" id="retirement-section">
+                <h2><i class="fas fa-umbrella-beach"></i> Calculadora de Retiro</h2>
+                <p class="description">Estima cuándo podrás jubilarte con Bitcoin.</p>
+
+                <div class="input-group">
+                    <label for="annual-expense">Gasto Anual Deseado (USDT)</label>
+                    <input type="number" id="annual-expense" placeholder="Ej: 50000" step="any">
+                </div>
+
+                <div class="input-group">
+                    <label for="withdrawal-rate">Tasa de Retiro Segura (%)</label>
+                    <input type="number" id="withdrawal-rate" value="4" step="0.1">
+                </div>
+
+                <div class="input-group">
+                    <label for="current-age">Edad Actual</label>
+                    <input type="number" id="current-age" placeholder="Ej: 30">
+                </div>
+
+                <div class="input-group">
+                    <label for="btc-growth">Crecimiento Anual Estimado BTC (%)</label>
+                    <input type="number" id="btc-growth" placeholder="Ej: 20" step="0.1">
+                </div>
+
+                <div class="input-group">
+                    <label for="annual-savings-btc">Ahorro Anual en BTC</label>
+                    <input type="number" id="annual-savings-btc" placeholder="Ej: 0.1" step="any">
+                </div>
+
+                <button id="btn-calculate-retirement" class="btn-primary">Calcular Retiro</button>
+
+                <div id="retirement-result" class="hidden">
+                    <div class="result-display">
+                        <span class="label">Capital Necesario:</span>
+                        <span class="value" id="required-capital">0.00 USDT</span>
+                    </div>
+                    <div class="result-display">
+                        <span class="label">BTC Necesario Ahora:</span>
+                        <span class="value" id="required-btc-now">0.00 BTC</span>
+                    </div>
+                    <div class="result-display">
+                        <span class="label">Te podrás retirar en:</span>
+                        <span class="value highlight" id="retirement-projection">-- años</span>
+                    </div>
+                </div>
+            </section>
         </main>
 
         <footer>
